@@ -1,0 +1,11 @@
+KEYBOARD SHORTCUTS
+
+• Parentheses (): Press SHIFT + 8.
+• Curly braces {}: Press ALT GR + 7.
+• ALL CAPS: Press CAPSLOCK (light should be ON).
+• All lowercase: Press CAPSLOCK again (light OFF).
+• Single capital letter: Press SHIFT + letter.
+• Semicolon (;): Press SHIFT + comma key.
+• Less-than (<): Left of SHIFT.
+• Greater-than (>): SHIFT + < key.
+• Before uploading Arduino code: Always select correct BOARD and PORT.

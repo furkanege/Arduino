@@ -1,0 +1,29 @@
+ROBOTICS COMPONENTS – TECHNICAL SUMMARY
+
+JUMPER CABLES
+Purpose: Provide electrical connection between Arduino, sensors, modules.
+Types:
+- Male–Male
+- Male–Female
+- Female–Female
+
+ON/OFF SWITCH
+Function: Simple HIGH/LOW digital control by opening/closing the circuit.
+
+5V WATER PUMP
+Description: Small DC pump used for irrigation and cooling. Driven by 5V DC motor.
+
+BATTERY TYPES
+9V Battery: Six 1.5V cells in series.
+AA Battery: Standard medium-size cell for consumer electronics.
+AAA Battery: Smaller variant for compact devices.
+
+BREADBOARD
+Function: Solderless prototyping board. Vertical connection columns, horizontal power rails.
+
+5V RELAY MODULE
+Purpose: Control high‑voltage devices using Arduino.
+Works by electromagnetic switching.
+
+ADJUSTABLE POTENTIOMETER
+Usage: Variable resistance control (brightness, volume, analog sensitivity).
