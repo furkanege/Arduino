@@ -1,7 +1,42 @@
-// ------------------------------------------------------------
-// Bella Ciao - Arduino Buzzer Version
-// Plays the melody using a piezo buzzer on pin 11
-// ------------------------------------------------------------
+/*
+  Project: Bella Ciao Buzzer Melody
+  File: bella_ciao.ino
+  Author: Furkan Ege
+  Board: Arduino UNO R3
+  Version: 1.0
+  Last Updated: 11/26/2025
+
+  Description:
+    Plays the "Bella Ciao" melody using a piezo buzzer connected to pin 11.
+    Demonstrates tone generation, note sequencing and basic music playback
+    using Arduino’s built-in tone() function.
+
+  Wiring:
+    Buzzer + → D11
+    Buzzer − → GND
+
+  Libraries:
+    - (No external libraries required — uses built-in tone())
+
+  Serial Baud:
+    Not used
+
+  Example Serial Output:
+    (No serial output for this project)
+
+  Notes:
+    - tone() uses PWM to generate square-wave audio signals.
+    - Some buzzers may require a current-limiting resistor.
+    - The melody plays only once on startup.
+
+  Real-World Applications:
+    - Alarms
+    - Audio notifications
+    - Embedded system feedback tones
+
+  License: GPL-3.0
+*/
+
 
 int buzzer = 11;  // Buzzer connected to Arduino digital pin 11
 

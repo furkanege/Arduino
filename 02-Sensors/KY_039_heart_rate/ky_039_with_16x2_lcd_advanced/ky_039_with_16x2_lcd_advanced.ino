@@ -1,13 +1,63 @@
-// ===============================================================
-//  KY-039 Advanced Pulse Sensor Project
-//  Features:
-//   - Beat detection algorithm
-//   - Averaged BPM calculation
-//   - Custom LCD heart icon
-//   - Heartbeat LED + Buzzer feedback
-//   - Noise filtering with rolling sample buffer
-//  Author: Furkan Ege
-// ===============================================================
+/*
+  Project: KY-039 Pulse Sensor with LCD (Advanced BPM Version)
+  File: ky_039_with_16x2_lcd_advanced.ino
+  Author: Furkan Ege
+  Board: Arduino UNO R3
+  Version: 1.0
+  Last Updated: 11/26/2025
+
+  Description:
+    Advanced heart rate monitor using KY-039 pulse sensor + LCD.
+    Features:
+      - Beat detection algorithm
+      - Averaged BPM calculation
+      - Custom LCD heart icon
+      - Heartbeat LED + buzzer sync
+      - Rolling sample filter for noise reduction
+
+  Wiring:
+    KY-039:
+      - Signal → A0
+      - VCC → 5V
+      - GND → GND
+
+    LCD 16x2 (I2C):
+      - SDA → A4
+      - SCL → A5
+      - VCC → 5V
+      - GND → GND
+
+    LED:
+      - + → D13
+      - - → GND
+
+    Buzzer:
+      - + → D8
+      - - → GND
+
+  Libraries:
+    - Wire.h
+    - LiquidCrystal_I2C.h
+
+  Serial Baud:
+    9600
+
+  Example Output:
+    Nabiz: 84
+    Ortalama Nabiz: 82.4
+
+  Notes:
+    - High accuracy requires consistent finger pressure.
+    - Light noise and motion will create false peaks.
+    - Adjust threshold or add further filtering for stability.
+
+  Real-World Applications:
+    - Low-cost heart rate monitor device
+    - Biomedical engineering demos
+    - Wearable prototype development
+
+  License: GPL-3.0
+*/
 
 #include <Wire.h>
 #include <LiquidCrystal_I2C.h>
@@ -28,9 +78,6 @@ int nabizSamples[numSamples] = {0};
 
 LiquidCrystal_I2C lcd(0x27, 16, 2);
 
-// ---------------------------------------------------------------
-//   Setup
-// ---------------------------------------------------------------
 void setup() {
   lcd.begin();
   lcd.backlight();
@@ -42,9 +89,6 @@ void setup() {
   createHeart();
 }
 
-// ---------------------------------------------------------------
-//   Main Loop
-// ---------------------------------------------------------------
 void loop() {
   int rawValue = analogRead(PulseWire);
   if (detectBeat(rawValue, threshold)) {
@@ -99,9 +143,6 @@ void loop() {
   delay(sampleInterval);
 }
 
-// ---------------------------------------------------------------
-//  Heartbeat Sound
-// ---------------------------------------------------------------
 void playHeartbeatSound() {
   static unsigned long lastHeartbeatTime = 0;
   unsigned long currentMillis = millis();
@@ -113,9 +154,6 @@ void playHeartbeatSound() {
   }
 }
 
-// ---------------------------------------------------------------
-//  Create Custom LCD Heart Icon
-// ---------------------------------------------------------------
 void createHeart() {
   byte heart[8] = {
     B00000,
@@ -130,9 +168,6 @@ void createHeart() {
   lcd.createChar(0, heart);
 }
 
-// ---------------------------------------------------------------
-//  Beat Detection Algorithm
-// ---------------------------------------------------------------
 bool detectBeat(int value, int threshold) {
   static int previousValue = 0;
   static bool beat = false;

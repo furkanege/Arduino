@@ -1,32 +1,71 @@
-// ------------------------------------------------------------
-// HC-SR04 Ultrasonic Distance Measurement
-// ------------------------------------------------------------
+/*
+  Project: Ultrasonic Distance Measurement (Serial Output)
+  File: distance_console.ino
+  Author: Furkan Ege
+  Board: Arduino UNO R3
+  Version: 1.0
+  Last Updated: 11/26/2025
 
-int trigPin = 13;   // Trigger pin (sends ultrasonic pulse)
-int echoPin = 12;   // Echo pin (receives returned pulse)
-long duration;      // Stores pulse travel time (microseconds)
-long distance;      // Calculated distance (centimeters)
+  Description:
+    Measures distance using an HC-SR04 ultrasonic sensor and prints the
+    measured value to the Serial Monitor. Demonstrates basic ultrasonic
+    timing, echo measurement and distance calculation for robotics and obstacle detection.
+
+  Wiring (HC-SR04):
+    VCC → 5V
+    GND → GND
+    TRIG → D13
+    ECHO → D12
+
+  Libraries:
+    - (No external libraries required)
+
+  Serial Baud:
+    9600
+
+  Example Serial Output:
+    Distance: 27 cm
+
+  Notes:
+    - Accurate readings require stable echo timing.
+    - HC-SR04 minimum range ~2 cm, maximum ~400 cm.
+    - Avoid placing sensor too close to ultrasonic-reflective surfaces.
+
+  Real-World Applications:
+    - Obstacle detection (robots)
+    - Parking assist systems
+    - Distance logging
+    - Automated measurement devices
+
+  License: GPL-3.0
+*/
+
+#define TRIG_PIN 13
+#define ECHO_PIN 12
+
+long duration;
+int distance;
 
 void setup() {
-  pinMode(trigPin, OUTPUT);  // TRIG is an output
-  pinMode(echoPin, INPUT);   // ECHO is an input
-  Serial.begin(9600);        // Start serial communication
+  pinMode(TRIG_PIN, OUTPUT);
+  pinMode(ECHO_PIN, INPUT);
+  Serial.begin(9600);
 }
 
 void loop() {
-  // --- Send ultrasonic pulse ---
-  digitalWrite(trigPin, LOW);
-  delayMicroseconds(5);          // Stabilization delay
-  digitalWrite(trigPin, HIGH);   // Start 10µs pulse
+  // Trigger pulse
+  digitalWrite(TRIG_PIN, LOW);
+  delayMicroseconds(2);
+  digitalWrite(TRIG_PIN, HIGH);
   delayMicroseconds(10);
-  digitalWrite(trigPin, LOW);    // End pulse
-  // --- Measure echo return time ---
-  duration = pulseIn(echoPin, HIGH);
-  // --- Convert time to distance ---
-  // Sound speed = 343 m/s → 29.1 µs per cm
-  // Distance = (duration / 29.1) / 2 (go + return)
-  distance = (duration / 29.1) / 2;
-  // --- Output result to Serial Monitor ---
+  digitalWrite(TRIG_PIN, LOW);
+
+  // Echo reading
+  duration = pulseIn(ECHO_PIN, HIGH);
+
+  // Convert to cm
+  distance = (duration / 2) / 29.1;
+
   Serial.print("Distance: ");
   Serial.print(distance);
   Serial.println(" cm");

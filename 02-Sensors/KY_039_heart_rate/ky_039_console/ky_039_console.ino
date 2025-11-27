@@ -1,35 +1,64 @@
-// KY-039 Pulse Sensor (Basic Version)
-// Reads analog values, averages them, and lights up an LED if above threshold.
+/*
+  Project: KY-039 Pulse Sensor Basic Serial Reader
+  File: ky_039_console.ino
+  Author: Furkan Ege
+  Board: Arduino UNO R3
+  Version: 1.0
+  Last Updated: 11/26/2025
 
-int analogPin = A0;        // KY-039 signal pin
-int LED = 13;              // Built-in LED for feedback
-int numSamples = 10;       // Number of samples to average
-int threshold = 600;       // Pulse detection threshold
-int sensorValues[10];      // Array to hold sampled values
+  Description:
+    Reads raw analog input from the KY-039 pulse sensor and displays the
+    fluctuating waveform values on the Serial Monitor. Useful for studying
+    pulse waveform patterns and experimenting with basic heart-beat detection.
+
+  Wiring (KY-039 Pulse Sensor):
+    Signal → A0
+    VCC    → 5V
+    GND    → GND
+
+  LED (Heartbeat Indicator):
+    + → D13
+    - → GND
+
+  Libraries:
+    - (No external libraries required)
+
+  Serial Baud:
+    9600
+
+  Example Serial Output:
+    Pulse Value: 132
+    Pulse Value: 187
+
+  Notes:
+    - KY-039 is highly sensitive; keep finger still during measurement.
+    - Environmental light affects waveform stability.
+    - This basic version does NOT calculate BPM.
+
+  Real-World Applications:
+    - Pulse waveform visualization
+    - Biomedical sensor experimentation
+    - Heartbeat-triggered interactions
+
+  License: GPL-3.0
+*/
+
+int pulsePin = A0;
+int led = 13;
 
 void setup() {
-  Serial.begin(9600);      // Initialize Serial Monitor
-  pinMode(LED, OUTPUT);    // LED as output
+  pinMode(led, OUTPUT);
+  Serial.begin(9600);
 }
 
 void loop() {
-  int sum = 0;
+  int value = analogRead(pulsePin);
+  Serial.print("Pulse Value: ");
+  Serial.println(value);
 
-  // Read multiple samples for stability
-  for (int i = 0; i < numSamples; i++) {
-    sensorValues[i] = analogRead(analogPin);
-    sum += sensorValues[i];
-    delay(10);             // Small delay between samples
-  }
-
-  int average = sum / numSamples;  // Calculate average value
-  Serial.println(average);         // Print averaged value
-
-  // LED ON if pulse value above threshold
-  if (average > threshold) {
-    digitalWrite(LED, HIGH);
-  } 
-  else {
-    digitalWrite(LED, LOW);
+  if (value > 550) {
+    digitalWrite(led, HIGH);
+  } else {
+    digitalWrite(led, LOW);
   }
 }

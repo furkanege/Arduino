@@ -1,69 +1,118 @@
-/* 
-  HC-SR04 Distance Sensor + Traffic LEDs + Buzzer
-  Version: V2 (Based on Fritzing circuit)
+/*
+  Project: Ultrasonic Distance Alert System (LEDs + Buzzer)
+  File: distance_with_leds_and_buzzer.ino
   Author: Furkan Ege
+  Board: Arduino UNO R3
+  Version: 1.0
+  Last Updated: 11/26/2025
+
   Description:
-  - Measures distance using HC-SR04 ultrasonic sensor
-  - Shows distance status using 3 LEDs (Green–Yellow–Red)
-  - Activates buzzer when distance is too close
+    Uses an HC-SR04 ultrasonic sensor to measure distance and provides
+    visual (LED) and audible (buzzer) alerts based on proximity thresholds.
+    Demonstrates basic robotics safety logic and real-time obstacle
+    detection feedback systems.
+
+  Wiring:
+    HC-SR04:
+      - TRIG → D13
+      - ECHO → D12
+      - VCC → 5V
+      - GND → GND
+
+    LEDs:
+      - Green LED → D8
+      - Yellow LED → D9
+      - Red LED → D10
+      (All LEDs through 220Ω resistors)
+
+    Buzzer:
+      - + → D11
+      - - → GND
+
+  Libraries:
+    - (No external libraries required)
+
+  Serial Baud:
+    9600
+
+  Example Serial Output:
+    Distance: 14 cm → ALERT: TOO CLOSE!
+
+  Notes:
+    - HC-SR04 accuracy improves in quiet environments.
+    - LED color thresholds can be adjusted per project.
+    - Buzzer can be modified for continuous or pulsed alert patterns.
+
+  Real-World Applications:
+    - Robot proximity alerts
+    - Parking assist systems
+    - Obstacle detection alarms
+    - Industrial safety systems
+
+  License: GPL-3.0
 */
 
-#define TRIG_PIN 13      // HC-SR04 Trigger pin
-#define ECHO_PIN 12      // HC-SR04 Echo pin
-#define LED_GREEN 8      // Safe distance
-#define LED_YELLOW 7     // Warning distance
-#define LED_RED 6        // Danger distance
-#define BUZZER_PIN 5     // Buzzer pin
+#define TRIG_PIN 13
+#define ECHO_PIN 12
+#define GREEN_LED 8
+#define YELLOW_LED 9
+#define RED_LED 10
+#define BUZZER_PIN 11
+
 long duration;
 int distance;
 
 void setup() {
-  Serial.begin(9600);
   pinMode(TRIG_PIN, OUTPUT);
   pinMode(ECHO_PIN, INPUT);
-  pinMode(LED_GREEN, OUTPUT);
-  pinMode(LED_YELLOW, OUTPUT);
-  pinMode(LED_RED, OUTPUT);
+
+  pinMode(GREEN_LED, OUTPUT);
+  pinMode(YELLOW_LED, OUTPUT);
+  pinMode(RED_LED, OUTPUT);
   pinMode(BUZZER_PIN, OUTPUT);
-  // Turn everything OFF at startup
-  digitalWrite(LED_GREEN, LOW);
-  digitalWrite(LED_YELLOW, LOW);
-  digitalWrite(LED_RED, LOW);
-  digitalWrite(BUZZER_PIN, LOW);
+
+  Serial.begin(9600);
 }
 
 void loop() {
-  // --- Send Ultrasonic Pulse ---
+  // Trigger pulse
   digitalWrite(TRIG_PIN, LOW);
-  delayMicroseconds(5);
+  delayMicroseconds(2);
   digitalWrite(TRIG_PIN, HIGH);
   delayMicroseconds(10);
   digitalWrite(TRIG_PIN, LOW);
-  // --- Read Echo Response ---
+
   duration = pulseIn(ECHO_PIN, HIGH);
-  distance = (duration / 29.1) / 2;   // Convert time to distance (cm)
+  distance = (duration / 2) / 29.1;
+
   Serial.print("Distance: ");
   Serial.print(distance);
   Serial.println(" cm");
-  // --- LED & Buzzer Logic ---
-  if (distance > 50) {  
-    // SAFE
-    digitalWrite(LED_GREEN, HIGH);
-    digitalWrite(LED_YELLOW, LOW);
-    digitalWrite(LED_RED, LOW);
+
+  // Distance logic
+  if (distance > 30) {
+    digitalWrite(GREEN_LED, HIGH);
+    digitalWrite(YELLOW_LED, LOW);
+    digitalWrite(RED_LED, LOW);
     digitalWrite(BUZZER_PIN, LOW);
-  } else if (distance > 20 && distance <= 50) {
-    // WARNING
-    digitalWrite(LED_GREEN, LOW);
-    digitalWrite(LED_YELLOW, HIGH);
-    digitalWrite(LED_RED, LOW);
-    digitalWrite(BUZZER_PIN, LOW);
-  } else if (distance <= 20) {
-    // DANGER – BUZZER ON
-    digitalWrite(LED_GREEN, LOW);
-    digitalWrite(LED_YELLOW, LOW);
-    digitalWrite(LED_RED, HIGH);
-    digitalWrite(BUZZER_PIN, HIGH);
   }
+  else if (distance <= 30 && distance > 15) {
+    digitalWrite(GREEN_LED, LOW);
+    digitalWrite(YELLOW_LED, HIGH);
+    digitalWrite(RED_LED, LOW);
+    digitalWrite(BUZZER_PIN, LOW);
+  }
+  else {
+    digitalWrite(GREEN_LED, LOW);
+    digitalWrite(YELLOW_LED, LOW);
+    digitalWrite(RED_LED, HIGH);
+
+    // Pulsed buzzer alert
+    digitalWrite(BUZZER_PIN, HIGH);
+    delay(100);
+    digitalWrite(BUZZER_PIN, LOW);
+    delay(100);
+  }
+
   delay(200); // Slight delay for stable readings
 }

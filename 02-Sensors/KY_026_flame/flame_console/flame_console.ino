@@ -1,40 +1,56 @@
 /*
-  Basic Flame Sensor (Fire Detection) Project
+  Project: Flame Sensor Console Reader (Analog Fire Detection)
+  File: flame_console.ino
   Author: Furkan Ege
+  Board: Arduino UNO R3
+  Version: 1.0
+  Last Updated: 11/26/2025
+
   Description:
-  - Reads flame detection from a digital pin
-  - Reads flame intensity from an analog pin
-  - Turns LED ON when flame is NOT detected
-  - Turns LED OFF when flame IS detected
+    Reads raw analog values from a flame sensor (IR fire sensor) and prints
+    them to the Serial Monitor. Useful for understanding sensor behavior,
+    threshold tuning and basic fire/light detection applications.
+
+  Wiring (Flame Sensor Module):
+    AO → A0     (Analog output)
+    DO → D2     (Not used in this example)
+    VCC → 5V
+    GND → GND
+
+  Libraries:
+    - (No external libraries required)
+
+  Serial Baud:
+    9600
+
+  Example Serial Output:
+    Flame Value: 782
+    Flame Value: 134
+
+  Notes:
+    - In most modules: Lower analog value = stronger flame detected.
+    - Avoid direct sunlight interference.
+    - Analog threshold typically needs calibration for your environment.
+
+  Real-World Applications:
+    - Fire detection systems
+    - Gas stove/flame monitoring
+    - Safety automation
+    - Robotics fire detection challenge projects
+
+  License: GPL-3.0
 */
 
-int ledPin = 13;          // LED indicator pin
-int digitalPin = 3;       // Flame sensor digital output
-int analogPin = A1;       // Flame sensor analog output
-int digitalVal = 0;       // Stores digital reading
-int analogVal = 0;        // Stores analog reading
+int flamePin = A0;  // Analog output from flame sensor
+int analogVal = 0;
 
 void setup() {
-  pinMode(ledPin, OUTPUT);
-  pinMode(digitalPin, INPUT);
   Serial.begin(9600);
-  Serial.println("Flame Sensor Test Started...");
 }
 
 void loop() {
-  // --- Digital read (0 = flame detected, 1 = no flame) ---
-  digitalVal = digitalRead(digitalPin);
-  if (digitalVal == HIGH) {
-    // No flame detected → LED ON
-    digitalWrite(ledPin, HIGH);
-  } else {
-    // Flame detected → LED OFF
-    digitalWrite(ledPin, LOW);
-  }
-  // --- Analog read (intensity measurement) ---
-  analogVal = analogRead(analogPin);
-  Serial.print("Analog Value: ");
+  analogVal = analogRead(flamePin);
+  Serial.print("Flame Value: ");
   Serial.println(analogVal);
-
   delay(100);
 }

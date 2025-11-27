@@ -1,9 +1,58 @@
-// ===========================================================
-//   KY-039 Basic Heart Rate Monitor (LCD + Buzzer)
-//   Simple peak detection, basic thresholding,
-//   moving text "Place Your Finger"
-//   Author: Furkan Ege
-// ===========================================================
+/*
+  Project: KY-039 Pulse Sensor with LCD (Basic Version)
+  File: ky_039_with_16x2_lcd_basic.ino
+  Author: Furkan Ege
+  Board: Arduino UNO R3
+  Version: 1.0
+  Last Updated: 11/26/2025
+
+  Description:
+    Simple KY-039 heart rate monitor using a 16x2 I2C LCD and buzzer.
+    Includes:
+      - Basic threshold-based peak detection
+      - Moving "Place Finger" text animation
+      - Sample averaging for stability
+      - LCD live pulse visualization
+
+  Wiring:
+    KY-039 Pulse Sensor:
+      - Signal → A0
+      - VCC → 5V
+      - GND → GND
+
+    LCD 16x2 (I2C):
+      - SDA → A4
+      - SCL → A5
+      - VCC → 5V
+      - GND → GND
+
+    Buzzer:
+      - + → D12
+      - - → GND
+
+  Libraries:
+    - Wire.h
+    - LiquidCrystal_I2C.h
+
+  Serial Baud:
+    9600
+
+  Example LCD Output:
+    Heart Rate:
+    82
+
+  Notes:
+    - KY-039 requires very steady finger placement.
+    - This BASIC version does NOT calculate BPM.
+    - Only raw pulse amplitude visualized.
+
+  Real-World Applications:
+    - Pulse waveform education
+    - Biomedical demos
+    - Basic heart rate indicator projects
+
+  License: GPL-3.0
+*/
 
 #include <Wire.h>
 #include <LiquidCrystal_I2C.h>
@@ -20,9 +69,6 @@ int riseCount = 0;
 int fallCount = 0;
 bool peakDetected = false;
 
-// -----------------------------------------------------------
-// Setup
-// -----------------------------------------------------------
 void setup() {
   pinMode(sensorPin, INPUT);
   pinMode(buzzer, OUTPUT);
@@ -34,9 +80,6 @@ void setup() {
   lcd.print(" on Sensor");
 }
 
-// -----------------------------------------------------------
-// Main Loop
-// -----------------------------------------------------------
 void loop() {
   while (analogRead(sensorPin) < sensorThreshold) {
     lcd.clear();
