@@ -1,63 +1,127 @@
-int flamePinDigital = 2; // Alev Sensörü'nün dijital pin'i
-int flamePinAnalog = A1; // Alev Sensörü'nün analog pin'i
-int mq2Pin = A0; // MQ2 Gaz Sensörü
-int ledPin = 13; // LED
-int buzzerPin = 12; // Buzzer
-int fanPin = 10; // Pervane
-int waterPumpPin = 11; // Su pompası
+/*
+  Project: Fire and Gas Safety System
+  File: fire_and_gas_safety_system.ino
+  Author: Furkan Ege
+  Board: Arduino UNO R3
+  Version: 1.0
+  Last Updated: 11/27/2025
 
-int flameValDigital; // Alev Sensörü'nün dijital değeri
-int flameValAnalog; // Alev Sensörü'nün analog değeri
-int mq2Val; // Gaz Sensörü değeri
+  Description:
+    Combined fire and gas safety system using:
+      - Flame sensor (digital + analog)
+      - MQ-2 gas sensor (analog)
+      - Warning LED and buzzer
+      - Exhaust fan for gas evacuation
+      - Water pump for fire response
 
-int gasThreshold = 100; // Gaz eşik değeri
-int flameThresold = 100; // Ateş eşik değeri
+    Behavior:
+      - If flame is detected → LED + buzzer + water pump ON.
+      - If gas level exceeds threshold → LED + buzzer + fan ON.
+      - When everything is normal → all actuators OFF.
+
+  Wiring:
+    Flame Sensor:
+      DO → D2
+      AO → A1
+      VCC → 5V
+      GND → GND
+
+    MQ-2 Gas Sensor:
+      AO → A0
+      VCC → 5V
+      GND → GND
+
+    LED:
+      + → D13 (with resistor)
+      - → GND
+
+    Buzzer:
+      + → D12
+      - → GND
+
+    Fan (via transistor/relay):
+      Control → D10
+
+    Water Pump (via transistor/relay):
+      Control → D11
+
+  Libraries:
+    - (No external libraries required)
+
+  Serial Baud:
+    9600
+
+  Notes:
+    - gasThreshold and flameThreshold must be tuned for your environment.
+    - Fan and pump MUST be driven via transistor/relay, not directly from Arduino.
+
+  Real-World Applications:
+    - Basic home safety demo
+    - Classroom safety systems
+    - Fire/gas training setups
+
+  License: GPL-3.0
+*/
+
+const int flamePinDigital = 2;
+const int flamePinAnalog  = A1;
+const int mq2Pin          = A0;
+const int ledPin          = 13;
+const int buzzerPin       = 12;
+const int fanPin          = 10;
+const int waterPumpPin    = 11;
+int flameValDigital = 0;
+int flameValAnalog  = 0;
+int mq2Val          = 0;
+int gasThreshold    = 200;  // adjust by test
+int flameThreshold  = 300;  // adjust by test
 
 void setup() {
   pinMode(flamePinDigital, INPUT);
-  pinMode(flamePinAnalog, INPUT);
-  pinMode(mq2Pin, INPUT);
   pinMode(ledPin, OUTPUT);
   pinMode(buzzerPin, OUTPUT);
-  pinMode(fanPin, OUTPUT); // Pervane için çıkış ayarlaması
-  pinMode(waterPumpPin, OUTPUT); // Su pompası için çıkış ayarlaması
-  Serial.begin(9600); // Serial monitör başlatılıyor.
+  pinMode(fanPin, OUTPUT);
+  pinMode(waterPumpPin, OUTPUT);
+  digitalWrite(ledPin, LOW);
+  digitalWrite(buzzerPin, LOW);
+  digitalWrite(fanPin, LOW);
+  digitalWrite(waterPumpPin, LOW);
+  Serial.begin(9600);
 }
 
 void loop() {
-  flameValDigital = digitalRead(flamePinDigital); // Alev Sensörü'nün dijital değeri okunuyor.
-  flameValAnalog = analogRead(flamePinAnalog); // Alev Sensörü'nün analog değeri okunuyor.
-  mq2Val = analogRead(mq2Pin); // Gaz Sensörü okunuyor.
-  // Sensör değerlerini Serial monitöre yazdırma
-  Serial.print("Ateş Tespiti (Dijital): ");
-  Serial.println(flameValDigital);
-  Serial.print("Ateş Yoğunluğu (Analog): ");
-  Serial.println(flameValAnalog);
-  Serial.print("Gaz Değeri: ");
+  flameValDigital = digitalRead(flamePinDigital);
+  flameValAnalog  = analogRead(flamePinAnalog);
+  mq2Val          = analogRead(mq2Pin);
+  Serial.print("FlameD: ");
+  Serial.print(flameValDigital);
+  Serial.print(" | FlameA: ");
+  Serial.print(flameValAnalog);
+  Serial.print(" | Gas: ");
   Serial.println(mq2Val);
-  // Eğer alev tespit edilirse veya gaz seviyesi eşiği aşarsa
-  if (flameValDigital == LOW || mq2Val > gasThreshold) {
-    digitalWrite(ledPin, HIGH); // LED'i yak.
-    digitalWrite(buzzerPin, HIGH); // Buzzer'ı çalıştır.
-    if (flameValDigital == LOW) {
-      digitalWrite(waterPumpPin, HIGH); // Ateş algılandığında su pompasını başlat
-      delay(15000); // 15 saniye bekle
-      digitalWrite(waterPumpPin, LOW); // Su pompasını durdur
-    }
-    if (mq2Val > gasThreshold) {
-      digitalWrite(fanPin, HIGH); // Gaz algılandığında pervaneyi başlat
-      delay(15000); // 15 saniye bekle
-      digitalWrite(fanPin, LOW); // Pervaneyi durdur
-    }
-    delay(100);
-    digitalWrite(buzzerPin, LOW); // Buzzer'ı durdur.
-    digitalWrite(ledPin, LOW); // LED'i söndür.
-  } 
+  bool fireDetected = (flameValDigital == LOW) || (flameValAnalog > flameThreshold);
+  bool gasDetected  = (mq2Val > gasThreshold);
+
+  if (fireDetected) {
+    // Fire has priority: water pump + alarm
+    digitalWrite(ledPin, HIGH);
+    digitalWrite(buzzerPin, HIGH);
+    digitalWrite(waterPumpPin, HIGH);
+    digitalWrite(fanPin, LOW);  // Fan optional for fire case
+  }
+  else if (gasDetected) {
+    // Gas only: fan + alarm
+    digitalWrite(ledPin, HIGH);
+    digitalWrite(buzzerPin, HIGH);
+    digitalWrite(fanPin, HIGH);
+    digitalWrite(waterPumpPin, LOW);
+  }
   else {
-    digitalWrite(buzzerPin, LOW); // Buzzer'ı durdur.
-    digitalWrite(ledPin, LOW); // LED'i söndür.
-    digitalWrite(fanPin, LOW); // Pervaneyi durdur.
-    digitalWrite(waterPumpPin, LOW); // Su pompasını durdur.
+    // Normal state
+    digitalWrite(ledPin, LOW);
+    digitalWrite(buzzerPin, LOW);
+    digitalWrite(fanPin, LOW);
+    digitalWrite(waterPumpPin, LOW);
   }
   delay(100);
 }

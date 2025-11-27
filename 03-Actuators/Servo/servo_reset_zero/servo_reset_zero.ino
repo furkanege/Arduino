@@ -1,30 +1,49 @@
-#include <Servo.h>
+/*
+  Project: Servo Reset to Zero Position
+  File: servo_reset_zero.ino
+  Author: Furkan Ege
+  Board: Arduino UNO R3
+  Version: 1.0
+  Last Updated: 11/27/2025
 
-// --- Servo Objects ---
-Servo servo13;
-Servo servo12;
-Servo servo11;
-Servo servo10;
+  Description:
+    Automatically resets the servo to 0° and holds the position.
+    Useful for calibration and mechanical home-position routines.
+
+  Wiring:
+    Servo:
+      Signal → D9
+      VCC    → 5V
+      GND    → GND
+
+  Libraries:
+    - Servo.h
+
+  Serial Baud:
+    (Not required)
+
+  Notes:
+    - For accurate "home" position, ensure servo horn is mounted correctly.
+    - Continuous rotation servos will NOT respond to angle commands.
+
+  Applications:
+    - Homing systems
+    - Reset mechanisms
+    - Robotics calibration
+
+  License: GPL-3.0
+*/
+
+#include <Servo.h>
+Servo myServo;
 
 void setup() {
-  // --- Initialize each servo and set to 0 degrees ---
-  initializeServo(servo13, 13);
-  initializeServo(servo12, 12);
-  initializeServo(servo11, 11);
-  initializeServo(servo10, 10);
+  myServo.attach(9);
+  myServo.write(0);   // Move to 0°
+  delay(500);
 }
 
 void loop() {
-  // Nothing here, servos are only zeroed on startup.
-}
-
-// ----------------------------------------------------
-//  Function: Initialize a servo and move it to 0°
-//  - servo: Servo object reference
-//  - pin: Arduino pin to attach the servo
-// ----------------------------------------------------
-void initializeServo(Servo &servo, int pin) {
-  servo.attach(pin);     // Attach servo to selected pin
-  servo.write(0);        // Move servo to 0 degrees
-  delay(1000);           // Wait 1 second for stabilization
+  myServo.write(0);   // Continuously hold zero position
+  delay(10);
 }

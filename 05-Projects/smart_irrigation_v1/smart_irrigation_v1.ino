@@ -1,18 +1,82 @@
-#include <LiquidCrystal_I2C.h>   // LCD I2C library
+/*
+  Project: Smart Irrigation System v1 (LCD + Soil Moisture + Pump Control)
+  File: smart_irrigation_v1.ino
+  Author: Furkan Ege
+  Board: Arduino UNO R3
+  Version: 1.0
+  Last Updated: 11/27/2025
+
+  Description:
+    Smart irrigation system using:
+      - Soil moisture sensor (analog)
+      - Water pump (relay controlled)
+      - 16x2 I2C LCD status display
+
+    Behavior:
+      - If soil moisture is dry → pump activates
+      - If moisture is medium/high → pump turns OFF
+      - LCD shows:
+          * Pump status (ACTIVE / OFF)
+          * Moisture level (HIGH / MED / LOW)
+
+  Wiring:
+    Soil Moisture Sensor:
+      AO  → A0
+      VCC → 5V
+      GND → GND
+
+    Water Pump Relay:
+      IN  → D2
+      VCC → 5V
+      GND → GND
+      NOTE: Many relay modules are ACTIVE-LOW.
+            This code assumes:
+              LOW  → Pump ON
+              HIGH → Pump OFF
+
+    LCD (I2C):
+      SDA → A4
+      SCL → A5
+      VCC → 5V
+      GND → GND
+
+  Libraries:
+    - LiquidCrystal_I2C.h
+    - Wire.h
+
+  Serial Baud:
+    9600
+
+  Notes:
+    - moistureValue varies by sensor model; thresholds should be calibrated.
+    - Typical readings:
+        0–300   = High moisture
+        300–950 = Medium moisture
+        >950    = Dry soil → Pump ON
+    - LCD requires a short delay after initialization.
+
+  Real-World Applications:
+    - Automated home plant watering
+    - Smart garden systems
+    - School IoT projects
+    - Agricultural automation demos
+
+  License: GPL-3.0
+*/
+
+#include <Wire.h>
+#include <LiquidCrystal_I2C.h>
 LiquidCrystal_I2C lcd(0x27, 16, 2);
-const int pumpPin = 2;           // Water pump relay/module pin
-const int soilMoisturePin = A0;  // Soil moisture sensor analog pin
+const int pumpPin = 2;             // Relay control pin
+const int soilMoisturePin = A0;    // Soil moisture sensor AO
 
 void setup() {
   Serial.begin(9600);
-  // LCD initialization
   lcd.begin();
   lcd.backlight();
   lcd.clear();
-  // Pump setup
   pinMode(pumpPin, OUTPUT);
-  digitalWrite(pumpPin, HIGH);  // Pump OFF (assuming LOW = active)
-  delay(1000);
+  digitalWrite(pumpPin, HIGH);    // Pump OFF (active-low relay)
   lcd.setCursor(0, 0);
   lcd.print("Smart Irrigation");
   lcd.setCursor(0, 1);
@@ -22,21 +86,20 @@ void setup() {
 }
 
 void loop() {
-  int moistureValue = analogRead(soilMoisturePin);  // Read soil moisture
+  int moistureValue = analogRead(soilMoisturePin);
   Serial.println(moistureValue);
-  // ----- Pump Control -----
-  if (moistureValue > 950) {  // Soil is dry
-    digitalWrite(pumpPin, LOW);  // Turn pump ON
+
+  if (moistureValue > 950) {
+    digitalWrite(pumpPin, LOW);
     lcd.setCursor(0, 0);
     lcd.print("Pump: ACTIVE   ");
-  } 
-  else {
-    digitalWrite(pumpPin, HIGH); // Turn pump OFF
+  } else {
+    digitalWrite(pumpPin, HIGH);
     lcd.setCursor(0, 0);
     lcd.print("Pump: OFF      ");
   }
-  // ----- Moisture Level Display -----
   lcd.setCursor(0, 1);
+
   if (moistureValue < 300) {
     lcd.print("Moisture: HIGH ");
   }

@@ -1,35 +1,79 @@
-// MQ-9 Gas Sensor Basic Example
+/*
+  Project: MQ-9 Gas Sensor Alarm (CO/CH4/LPG)
+  File: mq9_gas_alarm_basic.ino
+  Author: Furkan Ege
+  Board: Arduino UNO R3
+  Version: 1.0
+  Last Updated: 11/27/2025
 
-#define GAS_SENSOR   A0     // MQ-9 analog output
-#define RED_LED      2
-#define GREEN_LED    3
-#define BUZZER       7
-int sensorValue;
-int thresholdValue = 450;   // Adjustable gas threshold
+  Description:
+    Detects carbon monoxide and flammable gas levels using MQ-9.
+    Activates LEDs and buzzer based on concentration level.
+
+  Wiring:
+    MQ-9:
+      AO → A0
+      DO → D2 (optional)
+      VCC → 5V
+      GND → GND
+
+    LEDs:
+      GREEN → D7
+      YELLOW → D6
+      RED → D5
+
+    Buzzer:
+      → D8
+
+  Serial Baud:
+    9600
+
+  Real-World Applications:
+    - CO monitoring
+    - Fire safety modules
+    - Smart alarm systems
+
+  License: GPL-3.0
+*/
+
+#define MQ9_PIN A0
+#define RED_LED 5
+#define YELLOW_LED 6
+#define GREEN_LED 7
+#define BUZZER 8
+
+int gasValue = 0;
 
 void setup() {
+  Serial.begin(9600);
+
   pinMode(RED_LED, OUTPUT);
+  pinMode(YELLOW_LED, OUTPUT);
   pinMode(GREEN_LED, OUTPUT);
   pinMode(BUZZER, OUTPUT);
-  Serial.begin(9600);
 }
 
 void loop() {
-  sensorValue = analogRead(GAS_SENSOR);
-  Serial.println(sensorValue);
-  if (sensorValue > thresholdValue) {
-    // Gas detected
+  gasValue = analogRead(MQ9_PIN);
+  Serial.print("MQ-9 Value: ");
+  Serial.println(gasValue);
+
+  if (gasValue > 700) {
+    digitalWrite(RED_LED, HIGH);
+    digitalWrite(YELLOW_LED, LOW);
     digitalWrite(GREEN_LED, LOW);
     digitalWrite(BUZZER, HIGH);
-    digitalWrite(RED_LED, HIGH);
-    delay(300);
+  }
+  else if (gasValue > 400) {
     digitalWrite(RED_LED, LOW);
+    digitalWrite(YELLOW_LED, HIGH);
+    digitalWrite(GREEN_LED, LOW);
     digitalWrite(BUZZER, LOW);
-    delay(300);
-  } else {
-    // Safe level
+  }
+  else {
     digitalWrite(RED_LED, LOW);
-    digitalWrite(BUZZER, LOW);
+    digitalWrite(YELLOW_LED, LOW);
     digitalWrite(GREEN_LED, HIGH);
+    digitalWrite(BUZZER, LOW);
   }
 }
