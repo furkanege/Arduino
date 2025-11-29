@@ -1,13 +1,13 @@
 /*
-  Project: Smart House Monitor – v1
-  File: smart_house_v1.ino
+  Project: Smart Home Monitor – v1
+  File: smart_home_v1.ino
   Author: Furkan Ege
   Board: Arduino Nano
   Version: 1.0
   Last Updated: 11/29/2025
 
   Description:
-    Version 1 of the Smart House Monitor system.
+    Version 1 of the Smart Home Monitor system.
     This system displays temperature, atmospheric pressure,
     and gas levels on an SSD1306 OLED screen and over Serial.
 
