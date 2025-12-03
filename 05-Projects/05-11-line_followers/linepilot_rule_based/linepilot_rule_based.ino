@@ -34,9 +34,6 @@
         DIR2 → A2
         PWM  → D10
 
-  Libraries:
-    - None
-
   Serial Baud:
     9600
 
@@ -47,7 +44,6 @@
 static const bool LINE_IS_BLACK = true; // true: black line on white ground, false: white line on black ground
 static const int BASE_SPEED_PWM = 180;  // 0..255
 static const int TURN_SPEED_PWM = 180;  // 0..255
-
 // Pin Map
 static const int PIN_SENSOR_RIGHT  = 7;
 static const int PIN_SENSOR_CENTER = 6;
@@ -58,11 +54,9 @@ static const int PIN_MOTOR_L_PWM  = 9;
 static const int PIN_MOTOR_R_DIR1 = A1;
 static const int PIN_MOTOR_R_DIR2 = A2;
 static const int PIN_MOTOR_R_PWM  = 10;
-
 // Types / State
 enum class LastSeen : uint8_t { None, Left, Right };
 static LastSeen lastSeen = LastSeen::None;
-
 // Helpers
 static inline int normalizeDigitalLineReading(int rawDigital) {
   // rawDigital is 0/1 from sensor module.
