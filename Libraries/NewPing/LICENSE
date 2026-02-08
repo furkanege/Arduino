@@ -1,0 +1,18 @@
+NewPing Library - v1.9.7 - 02/16/2023
+
+AUTHOR/LICENSE:
+Created by Tim Eckel - eckel.tim@gmail.com
+Copyright 2023 License: Forks and derivitive works are NOT permitted without
+permission. Permission is only granted to use as-is for private and
+commercial use. If you wish to contribute, make changes, or enhancements,
+please create a pull request. I get a lot of support issues from this
+library, much of which comes from old versions, buggy forks or sites without
+proper documentation. Trying to wrangle this project together, thanks!
+
+LINKS:
+Project home: https://bitbucket.org/teckel12/arduino-new-ping/wiki/Home
+Support: https://bitbucket.org/teckel12/arduino-new-ping/issues?status=new&status=open
+
+DISCLAIMER:
+This software is furnished "as is", without technical support, and with no
+warranty, express or implied, as to its usefulness for any purpose.
