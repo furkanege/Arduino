@@ -4,8 +4,8 @@
   Author: Furkan Ege
   Board: Arduino Nano / UNO
   Version: 1.0
-  Last Updated: 12-01-2025
-
+  Last Updated: 02/07/2026
+  
   Description:
     Bluetooth-controlled 2WD motor driver with speed levels, AUX outputs and a safety failsafe.
     If Bluetooth data stops (disconnect / out of range) the motors are automatically stopped.

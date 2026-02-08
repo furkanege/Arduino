@@ -4,7 +4,7 @@
 **Status:** Public – Fully Open-Source
 
 This repository contains my complete collection of Arduino-based sensor projects, prototypes and educational examples.  
-All projects are organized by **sensor type**, following a clean and scalable directory structure (e.g. `DHT11/`, `LDR/`, `KY-026_Flame/`, `MQ-2_Gas/`, `KY-039_Heartbeat/` etc.)
+All projects are organized by **sensor type**, following a clean and scalable directory structure (e.g. `DHT11_temperature_humidity/`, `LDR_GL5528_photoresistor/`, `KY_026_flame/`, `MQ_gas_sensors_family/`, `KY_039_heart_rate/` etc.)
 
 I believe **software = transparency**, so every project -from the first simple code I wrote to the most advanced prototypes- is fully shared and openly accessible.
 
@@ -45,6 +45,10 @@ My goal is simple:
 This repository is licensed under **GPL-3.0**.  
 You are free to **use, modify, develop, adapt** but you must **share your modified version publicly** under the same license.
 
+### Third-Party Libraries
+The `Libraries/` folder contains third-party libraries with their own licenses.  
+See `THIRD_PARTY_NOTICES.md` for details.
+
 > "If you improve it, share it. If you just take it without giving back…  
 >  well, that part is on you. 😄"
 
@@ -57,6 +61,12 @@ Feel free to open:
 - New sensor suggestions
 
 All community support is welcome.
+
+---
+
+## 📚 Docs
+- `Docs/components.txt` — hardware component summary
+- `Docs/shortcuts.txt` — keyboard shortcuts and upload reminders
 
 ---
 

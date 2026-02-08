@@ -4,7 +4,7 @@
   Author: Furkan Ege
   Board: Arduino Nano / UNO
   Version: 1.0
-  Last Updated: 12/01/2025
+  Last Updated: 02/07/2026
 
   Description:
     Bluetooth-controlled RC boat driver using two DC motors (propellers) with speed levels,
